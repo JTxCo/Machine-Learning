@@ -1,0 +1,10 @@
+*.png
+*.csv
+*.docx
+*.doc
+*.zip
+
+echo "*.png" >> .gitignore
+echo "*.csv" >> .gitignore
+echo "*.docx" >> .gitignore
+echo "*.doc" >> .gitignore

@@ -3,8 +3,8 @@
 *.docx
 *.doc
 *.zip
-
-echo "*.png" >> .gitignore
+*.wav
+cho "*.png" >> .gitignore
 echo "*.csv" >> .gitignore
 echo "*.docx" >> .gitignore
 echo "*.doc" >> .gitignore

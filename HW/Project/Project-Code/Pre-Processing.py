@@ -1,30 +1,41 @@
 import librosa
-from scipy.signal import butter, filtfilt
+import librosa.display
 import numpy as np
-import os
 import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout
+from files import load_ship_data, segment_audio_data
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from sklearn.pipeline import Pipeline
 
-# Load a sample audio file
-audio_file_path = '../DeepShip/Cargo/15.wav'
- 
-# visualizing log-mel spectrogram
-def compute_logmel_spectrogram(y, sr, n_mels=128, hop_length=512):
-    mel_spectrogram = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=hop_length, n_chroma=12)
-    logmel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max)
-    return logmel_spectrogram
- 
-# load the audio file
-target_sr = 16000
- 
-# Load the audio file
-y, sr = librosa.load(audio_file_path, sr=target_sr)
- 
-# Compute log-mel spectrogram
-logmel_spectrogram = compute_logmel_spectrogram(y, sr=sr)
- 
-# Display the log-mel spectrogram
-plt.figure(figsize=(8, 4))
-librosa.display.specshow(logmel_spectrogram, sr=sr, hop_length=512, x_axis='time', y_axis='mel')
-plt.colorbar(format='%+2.0f dB')
-plt.title('Log-Mel Spectrogram')
-plt.show()
+# Features extraction functions:
+from FeatureExtractions import extract_mfccs, extract_all_mfccs
+
+
+def find_minimum_audio_length(data):
+    min_length = float('inf')  # Initialize with a very high number
+    
+    for entry in data:
+        audio = entry['audio']
+        if len(audio) < min_length:
+            min_length = len(audio)
+    
+    return min_length
+
+    return max_length
+
+# loading the ship data without segmenting the audio data
+dataset_long = load_ship_data()
+print("Minimum audio length:", find_minimum_audio_length(dataset_long))
+# Segmenting the audio data, overlapping it so that features are not missed
+# Segment length of 5 seconds and overlap of 25% are defaults
+dataset_segmented = segment_audio_data(dataset_long, segment_length=5, overlap_percent=0.25)
+print("Minimum audio length after segmentation:", find_minimum_audio_length(dataset_segmented))
+
+# Feature extraction
+mfccs = extract_all_mfccs(dataset_segmented, sample_rate=22050, n_mfcc=13)
+

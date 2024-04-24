@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import librosa
-
+import numpy as np
 
 def load_ship_data():
     
@@ -52,3 +52,41 @@ def load_ship_data():
             print(f"Skipping file: {dir_entry}")  # Not a directory, skip processing
         print("dataset length at this point: ", len(dataset))
     return dataset
+
+    
+    
+    # Function to to segment the audio data into fixed length segments
+    # I am taking the dataframe in and then breaking up the individual audio files into X length segments
+    # I will be optimizing the segment length so this is why it is being done after the data is loaded
+    
+def segment_audio_data(data, segment_length=5, overlap_percent=0.25):
+    segmented_data = []
+    for entry in data:
+        audio = entry['audio']
+        sr = entry['sample_rate']
+        segment_length_samples = int(sr * segment_length)
+        overlap_samples = int(segment_length_samples * overlap_percent)
+        step = segment_length_samples - overlap_samples
+
+        # Processing all segments with the specified overlap
+        for start in range(0, len(audio), step):
+            end = start + segment_length_samples
+            segment = audio[start:end]
+            if len(segment) < segment_length_samples:
+                segment = np.pad(segment, (0, segment_length_samples - len(segment)), mode='constant', constant_values=(0, 0))
+            segmented_data.append(create_segment_dict(entry, sr, segment))
+
+    return segmented_data
+
+def create_segment_dict(entry, sr, segment):
+    # Helper function to create a dictionary for each segment and avoid code duplication.
+    return {
+        'audio': segment,
+        'sample_rate': sr,
+        'class_id': entry['class_id'],
+        'ship_name': entry['ship_name'],
+        'date': entry['date'],
+        'time': entry['time'],
+        'duration': entry['duration'],
+        'distance': entry['distance']
+    }

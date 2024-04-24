@@ -13,7 +13,7 @@ from sklearn.metrics import classification_report
 from sklearn.pipeline import Pipeline
 
 # Features extraction functions:
-from FeatureExtractions import extract_mfccs, extract_all_mfccs
+from FeatureExtractions import extract_mfccs, extract_all_mfccs, plot_wavelet
 
 
 def find_minimum_audio_length(data):
@@ -26,16 +26,21 @@ def find_minimum_audio_length(data):
     
     return min_length
 
-    return max_length
 
 # loading the ship data without segmenting the audio data
 dataset_long = load_ship_data()
 print("Minimum audio length:", find_minimum_audio_length(dataset_long))
+# original length:
+print("Length of dataset_long:", len(dataset_long))
 # Segmenting the audio data, overlapping it so that features are not missed
 # Segment length of 5 seconds and overlap of 25% are defaults
 dataset_segmented = segment_audio_data(dataset_long, segment_length=5, overlap_percent=0.25)
 print("Minimum audio length after segmentation:", find_minimum_audio_length(dataset_segmented))
 
+# length:
+print("Length of dataset_long:", len(dataset_long))
 # Feature extraction
-mfccs = extract_all_mfccs(dataset_segmented, sample_rate=22050, n_mfcc=13)
+# mfccs = extract_all_mfccs(dataset_segmented, sample_rate=22050, n_mfcc=13)
 
+# wavelet visualization:
+plot_wavelet('db1', 'db', level=5)

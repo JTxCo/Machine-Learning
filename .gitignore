@@ -4,6 +4,7 @@
 *.doc
 *.zip
 *.wav
+*.pptx
 cho "*.png" >> .gitignore
 echo "*.csv" >> .gitignore
 echo "*.docx" >> .gitignore

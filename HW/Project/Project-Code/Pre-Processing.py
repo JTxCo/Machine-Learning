@@ -59,5 +59,10 @@ print("Sample rate of dataset_segmented:", dataset_segmented[0]['sample_rate'])
 
 
 # testing discrete wavelet transform:
-coeffs = discrete_wavelet_transform(dataset_segmented[0]['audio'], wavelet='db1')
-test_discrete_transform_output(coeffs)
+# coeffs = discrete_wavelet_transform(dataset_segmented[0]['audio'], wavelet='db1')
+# test_discrete_transform_output(coeffs)
+
+
+# working with LPC
+lpc_coeffs = lpc(dataset_segmented[0], order=13)
+display_lpc(lpc_coeffs)

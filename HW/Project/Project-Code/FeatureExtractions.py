@@ -9,6 +9,13 @@ import pandas as pd
 '''
  These are functions that do the feature extraction for the audio data
  I am going to be using the librosa library to extract the features from the audio data
+ 
+
+ follows format:      
+        A. Function
+        B. Testing with output
+        
+        
  Extracting:
     1.	Continuous Wavelet Transform (CWT)
     2.  Discrete Wavelet Transform (DWT)
@@ -19,30 +26,6 @@ import pandas as pd
 
  
 '''
-def discrete_wavelet_transform(audio, wavelet='db1', level=None):
-    '''
-        Extracting the discrete wavelet transform (DWT) from the audio data.
-        
-        Args:
-            audio (np.array): The audio signal from which to extract features.
-            wavelet (str): The wavelet to use for decomposition, typically set to 'db1' for the Haar wavelet.
-            level (int): Optional. The maximum level of decomposition to perform. Defaults to the maximum level possible if not specified.
-                setting it to None will keep it at the max it can be. Otherwise less than max 
-        Returns:
-            list: List of wavelet coefficients for each level of decomposition.
-            
-    '''
-    # If level is not set, calculate the maximum level possible for DWT
-    if level is None:
-        level = pywt.dwt_max_level(len(audio), pywt.Wavelet(wavelet))
-
-    # Perform the DWT
-    coeffs = pywt.wavedec(audio, wavelet, level=level)
-    
-    return coeffs
-
-
-
 def continuous_wavelet_transform(audio, sample_rate, wavelet='morl', max_scale= 100):
     '''
         Extract continuous wavelet transform from the audio data.
@@ -63,42 +46,6 @@ def continuous_wavelet_transform(audio, sample_rate, wavelet='morl', max_scale= 
     
     return coef, freqs
 
-
-def wavelet_packet_decomposition(audio, wavelet='db1', level=5):
-    '''
-        Extracting the wavelet packet decomposition from the audio data
-        Args:
-            audio (np.array): The audio signal from which to extract features.
-            wavelet (str): The wavelet to use for decomposition, set to db1 which is the Haar wavelet.
-            level (int): The level of decomposition to perform.
-            
-        Returns:
-            pywt.WaveletPacket: Wavelet packet decomposition of the audio signal.
-            
-    '''
-    wp = pywt.WaveletPacket(data=audio, wavelet=wavelet, mode='symmetric', maxlevel=level)
-    
-    return {node.path : node.data for node in wp.get_level(level, 'natural')}
-
-def test_discrete_transform_output(coeffs):
-    # Print the number of decomposition levels
-    print("Decomposition Levels: ", len(coeffs))
-
-    # Print some of the coefficients from each level
-    for i, coeff in enumerate(coeffs):
-        print(f"\nCoefficient details at level {i+1}:")
-        print("-------------------------------")
-        print("Length of Coefficient Array:", len(coeff))
-        print("First Few Coefficients:\n", coeff[:10])  
-        print("-------------------------------")
-
-    # If you'd like, plot the coefficients at each level:
-    for i, coeff in enumerate(coeffs):
-        plt.figure(figsize=(10, 4))
-        plt.plot(coeff)
-        plt.title(f"DWT Coefficients - Level {i+1}")
-        plt.show()
-    
 
 def test_continuous_transform_output(coef, freqs, max_scale = 10):
     # Print shape of the coefficients
@@ -122,6 +69,84 @@ def test_continuous_transform_output(coef, freqs, max_scale = 10):
     plt.title("CWT Coefficients - Scale 1")
     plt.show()
 
+def discrete_wavelet_transform(audio, wavelet='db1', level=None):
+    '''
+        Extracting the discrete wavelet transform (DWT) from the audio data.
+        
+        Args:
+            audio (np.array): The audio signal from which to extract features.
+            wavelet (str): The wavelet to use for decomposition, typically set to 'db1' for the Haar wavelet.
+            level (int): Optional. The maximum level of decomposition to perform. Defaults to the maximum level possible if not specified.
+                setting it to None will keep it at the max it can be. Otherwise less than max 
+        Returns:
+            list: List of wavelet coefficients for each level of decomposition.
+            
+    '''
+    # If level is not set, calculate the maximum level possible for DWT
+    if level is None:
+        level = pywt.dwt_max_level(len(audio), pywt.Wavelet(wavelet))
+
+    # Perform the DWT
+    coeffs = pywt.wavedec(audio, wavelet, level=level)
+    
+    return coeffs
+
+def test_discrete_transform_output(coeffs):
+
+    '''
+        The plots show the Discrete Wavelet Transform (DWT) coefficients at each level of the decomposition. 
+        The x-axis represents the indexed position in the wavelet coefficient array for each level
+        The y-axis displays the coefficient values.
+
+        Resolution/Sensitivity: 
+            Level 1 shows the high-frequency details of the signal as it captures the shortest-scale information
+            Level 2 +:  Higher decomposition levels (2, 3, etc.
+    
+        Magnitude of Coefficients: The magnitude of the wavelet coefficients at a specific index reflects how closely the scaled and shifted wavelet aligns with the audio signal at that point. 
+        Larger magnitudes represent areas where the signal matches the wavelet shape more closely.
+        
+        Signal Details: High-frequency details (like noise or rapid changes) often appear in the first few levels of decomposition,
+        while more significant structural components of the signal (like general shape or slower changes) become visible in the coefficients at higher levels.
+    
+    '''
+    
+    
+    
+    # Print the number of decomposition levels
+    print("Decomposition Levels: ", len(coeffs))
+
+    # Print some of the coefficients from each level
+    for i, coeff in enumerate(coeffs):
+        print(f"\nCoefficient details at level {i+1}:")
+        print("-------------------------------")
+        print("Length of Coefficient Array:", len(coeff))
+        print("First Few Coefficients:\n", coeff[:10])  
+        print("-------------------------------")
+
+    # If you'd like, plot the coefficients at each level:
+    for i, coeff in enumerate(coeffs):
+        plt.figure(figsize=(10, 4))
+        plt.plot(coeff)
+        plt.title(f"DWT Coefficients - Level {i+1}")
+        plt.show()
+
+
+
+def wavelet_packet_decomposition(audio, wavelet='db1', level=5):
+    '''
+        Extracting the wavelet packet decomposition from the audio data
+        Args:
+            audio (np.array): The audio signal from which to extract features.
+            wavelet (str): The wavelet to use for decomposition, set to db1 which is the Haar wavelet.
+            level (int): The level of decomposition to perform.
+            
+        Returns:
+            pywt.WaveletPacket: Wavelet packet decomposition of the audio signal.
+            
+    '''
+    wp = pywt.WaveletPacket(data=audio, wavelet=wavelet, mode='symmetric', maxlevel=level)
+    
+    return {node.path : node.data for node in wp.get_level(level, 'natural')}
 
 
 def test_wavelet_output(wavelet_packet):
@@ -165,6 +190,64 @@ def plot_audio_wavelet(audio, sample_rate, wavelet_name='morl', max_level=None):
     plt.ylabel('Frequency (Hz)')
     plt.colorbar(label='Magnitude')
     plt.show()
+
+
+
+
+
+
+# Linear Predictive Coding (LPC) 
+# Applied using this tutorial: https://www.kuniga.me/blog/2021/05/13/lpc-in-python.html
+
+def lpc(data, order=13):
+    '''
+        Extract Linear Predictive Coding (LPC) coefficients from the audio data.
+        
+        Args:
+            data (dict): A dictionary containing 'audio' and 'sample_rate' as keys.
+            order (int): The order of the LPC model to use.
+            
+        Returns:
+            np.array: LPC coefficients.
+    '''
+    audio = data['audio']
+    sample_rate = data['sample_rate']
+    
+    # normalize the amplitude of the audio signal
+    max_val = np.max(np.abs(audio))
+    if max_val != 0:  # Safety check to prevent division by zero
+        audio = audio / max_val
+    
+    # downsampling the audio signal
+    target_sample_rate = 8000
+    try:
+        resampled_audio = librosa.resample(y=audio, orig_sr=sample_rate, target_sr=target_sample_rate)
+    except Exception as e:
+        print(e)
+        print('audio:', audio)
+        print('sample_rate:', sample_rate)
+        print('target_sample_rate:', target_sample_rate)
+    
+    # Apply LPC
+    lpc_coeffs = librosa.lpc(y = audio, order = order)
+    
+    return lpc_coeffs
+
+
+def display_lpc(lpc_coeffs):
+    '''
+        Display the LPC coefficients as a bar graph.
+        
+        Args:
+            lpc_coeffs (np.array): The LPC coefficients to display.
+    '''
+    plt.figure(figsize=(10, 6))
+    plt.bar(range(len(lpc_coeffs)), lpc_coeffs)
+    plt.title("LPC Coefficients")
+    plt.xlabel("Coefficient Index")
+    plt.ylabel("Coefficient Value")
+    plt.show()
+
 
 
 

@@ -79,6 +79,27 @@ def wavelet_packet_decomposition(audio, wavelet='db1', level=5):
     wp = pywt.WaveletPacket(data=audio, wavelet=wavelet, mode='symmetric', maxlevel=level)
     
     return {node.path : node.data for node in wp.get_level(level, 'natural')}
+
+def test_discrete_transform_output(coeffs):
+    # Print the number of decomposition levels
+    print("Decomposition Levels: ", len(coeffs))
+
+    # Print some of the coefficients from each level
+    for i, coeff in enumerate(coeffs):
+        print(f"\nCoefficient details at level {i+1}:")
+        print("-------------------------------")
+        print("Length of Coefficient Array:", len(coeff))
+        print("First Few Coefficients:\n", coeff[:10])  
+        print("-------------------------------")
+
+    # If you'd like, plot the coefficients at each level:
+    for i, coeff in enumerate(coeffs):
+        plt.figure(figsize=(10, 4))
+        plt.plot(coeff)
+        plt.title(f"DWT Coefficients - Level {i+1}")
+        plt.show()
+    
+
 def test_continuous_transform_output(coef, freqs, max_scale = 10):
     # Print shape of the coefficients
     print("Shape of coefficients:", coef.shape)

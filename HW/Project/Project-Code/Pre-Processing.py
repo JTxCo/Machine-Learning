@@ -53,6 +53,11 @@ print("Sample rate of dataset_segmented:", dataset_segmented[0]['sample_rate'])
 # test_wavelet_output(wavelet_packet)
 
 # Get the continuous wavelet transform
-coef, freqs = continuous_wavelet_transform(dataset_segmented[0]['audio'],dataset_segmented[0]['sample_rate'], wavelet='morl', max_scale=10)
+# coef, freqs = continuous_wavelet_transform(dataset_segmented[0]['audio'],dataset_segmented[0]['sample_rate'], wavelet='morl', max_scale=10)
 # Test the output
-test_continuous_transform_output(coef, freqs)
+# test_continuous_transform_output(coef, freqs)
+
+
+# testing discrete wavelet transform:
+coeffs = discrete_wavelet_transform(dataset_segmented[0]['audio'], wavelet='db1')
+test_discrete_transform_output(coeffs)

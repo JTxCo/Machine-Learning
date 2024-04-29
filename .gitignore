@@ -1,11 +1,28 @@
+# image files
 *.png
+
+# data files
 *.csv
+
+# document files
 *.docx
 *.doc
+
+# archives
 *.zip
+
+# audio files
 *.wav
+
+# presentation files
 *.pptx
-cho "*.png" >> .gitignore
-echo "*.csv" >> .gitignore
-echo "*.docx" >> .gitignore
-echo "*.doc" >> .gitignore
+
+# Python cache
+__pycache__/
+
+# macOS files
+*.DS_Store
+.DS_Store
+
+# Python artifacts
+*.pyc

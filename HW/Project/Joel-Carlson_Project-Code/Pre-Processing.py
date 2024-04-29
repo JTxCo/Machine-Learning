@@ -40,27 +40,27 @@ print("Sample rate of dataset_segmented:", dataset_segmented[0]['sample_rate'])
 # length:
 # print("Length of dataset_long:", len(dataset_segmented))
 # Feature extraction
-# mfccs = extract_all_mfccs(dataset_segmented, sample_rate=22050, n_mfcc=13)
+mfccs = extract_all_mfccs(dataset_segmented, sample_rate=22050, n_mfcc=13)
 
 # wavelet visualization:
-# plot_audio_wavelet(dataset_segmented[0]['audio'], dataset_segmented[0]['sample_rate'],wavelet_name='gaus1', max_level=100)
+plot_audio_wavelet(dataset_segmented[0]['audio'], dataset_segmented[0]['sample_rate'],wavelet_name='gaus1', max_level=100)
 
 
 
 # testing new feature extraction functions:
 # waveletpacket decomposition:
-# wavelet_packet = wavelet_packet_decomposition(dataset_segmented[0]['audio'], wavelet='db1', level=5)
-# test_wavelet_output(wavelet_packet)
+wavelet_packet = wavelet_packet_decomposition(dataset_segmented[0]['audio'], wavelet='db1', level=5)
+test_wavelet_output(wavelet_packet)
 
 # Get the continuous wavelet transform
-# coef, freqs = continuous_wavelet_transform(dataset_segmented[0]['audio'],dataset_segmented[0]['sample_rate'], wavelet='morl', max_scale=10)
+coef, freqs = continuous_wavelet_transform(dataset_segmented[0]['audio'],dataset_segmented[0]['sample_rate'], wavelet='morl', max_scale=10)
 # Test the output
-# test_continuous_transform_output(coef, freqs)
+test_continuous_transform_output(coef, freqs)
 
 
 # testing discrete wavelet transform:
-# coeffs = discrete_wavelet_transform(dataset_segmented[0]['audio'], wavelet='db1')
-# test_discrete_transform_output(coeffs)
+coeffs = discrete_wavelet_transform(dataset_segmented[0]['audio'], wavelet='db1')
+test_discrete_transform_output(coeffs)
 
 
 # working with LPC

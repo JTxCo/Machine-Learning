@@ -255,7 +255,7 @@ def display_lpc(lpc_coeffs):
 def extract_mfccs(audio, sample_rate, n_mfcc=13):
     """
     Extract MFCCs from an audio signal.
-
+        MFCC = Mel-Frequency Cepstral Coefficients
     Args:
         audio (np.array): The audio signal from which to extract features.
         sample_rate (int): The sample rate of the audio signal.

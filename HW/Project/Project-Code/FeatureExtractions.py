@@ -7,24 +7,26 @@ import pywt
 import pandas as pd
 
 '''
- These are functions that do the feature extraction for the audio data
- I am going to be using the librosa library to extract the features from the audio data
+These are functions that do the feature extraction for the audio data
+I am going to be using the librosa library to extract the features from the audio data
  
 
- follows format:      
+follows format:      
         A. Function
         B. Testing with output
         
         
- Extracting:
+Extracting:
     1.	Continuous Wavelet Transform (CWT)
     2.  Discrete Wavelet Transform (DWT)
     3.  Wavelet packet decomposition (WPD)
-    4.	Linear Predictive Coding (LPC) 
-    5.	Fisher Criterion for feature selection 
-    6.	Cepstrum, Mel spectrogram, MFCC, Constant Q Transform (CQT), Gammatone Frequency Cepstral Coefficients (GFCC), and additional Wavelet packets.
+    4.	Fisher Criterion for feature selection 
+    5.	Cepstrum, Mel spectrogram, MFCC, Constant Q Transform (CQT), Gammatone Frequency Cepstral Coefficients (GFCC), and additional Wavelet packets.
 
- 
+Feature Selection:
+    1. Fisher Criterion for feature selection
+    2. Principal Component Analysis (PCA)
+    3. Linear Discriminant Analysis (LDA)
 '''
 def continuous_wavelet_transform(audio, sample_rate, wavelet='morl', max_scale= 100):
     '''
@@ -250,8 +252,6 @@ def display_lpc(lpc_coeffs):
 
 
 
-
-
 def extract_mfccs(audio, sample_rate, n_mfcc=13):
     """
     Extract MFCCs from an audio signal.
@@ -262,11 +262,21 @@ def extract_mfccs(audio, sample_rate, n_mfcc=13):
         n_mfcc (int): Number of MFCCs to return.
 
     Returns:
-        np.array: Numpy array of MFCCs.
+        np.array: Numpy array of processed MFCCs.
     """
     try:
-        mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=n_mfcc)
+        # Extract raw MFCCs
+        raw_mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=n_mfcc)
+        
+        # Process MFCCs to get a 1D vector
+        # Calculate mean and standard deviation
+        mean_mfccs = np.mean(raw_mfccs.T, axis=0)
+        std_mfccs = np.std(raw_mfccs.T, axis=0)
+        
+        # Concatenate to get final MFCC vector
+        mfccs = np.hstack((mean_mfccs, std_mfccs))
         return mfccs
+        
     except Exception as e:
         print(f"Failed to extract MFCCs: {e}")
         return None
@@ -294,3 +304,25 @@ def extract_all_mfccs(entries, sample_rate, n_mfcc=13):
             print(f"Skipping entry due to MFCC extraction error.")
     return mfccs
 
+'''
+
+------------------------------------------------------------------------------------------------------------------------
+    
+    Feature Selection Section
+
+------------------------------------------------------------------------------------------------------------------------
+'''
+
+
+from sklearn.feature_selection import mutual_info_classif
+
+# Starting with information gain
+
+
+def info_gain(features, data ):
+    '''
+        features are the extracted features from the audio data to be selected
+        data is the class labels
+    '''
+
+    

@@ -16,7 +16,8 @@ from sklearn.pipeline import Pipeline
 
 # Load the ship data using files.py function
 dataset = load_ship_data()
-
+# dataset segmented
+dataset = segment_audio_data(dataset, segment_length=5, overlap_percent=0.25)
 
 # Class ID corresponds to the ship class: 
 # Cargo ships are 70s: 70, 71, 79, ...

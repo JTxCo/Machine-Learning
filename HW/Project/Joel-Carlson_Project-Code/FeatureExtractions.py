@@ -20,7 +20,6 @@ Extracting:
     1.	Continuous Wavelet Transform (CWT)
     2.  Discrete Wavelet Transform (DWT)
     3.  Wavelet packet decomposition (WPD)
-    4.	Fisher Criterion for feature selection 
     5.	Cepstrum, Mel spectrogram, MFCC, Constant Q Transform (CQT), Gammatone Frequency Cepstral Coefficients (GFCC), and additional Wavelet packets.
 
 Feature Selection:
@@ -294,22 +293,25 @@ def extract_all_mfccs(entries, sample_rate, n_mfcc=13):
     Returns:
         list: List of MFCC arrays.
     """
-    mfccs = []
+    mfccs_all = []
     for entry in entries:
         audio = entry['audio']
         mfcc_result = extract_mfccs(audio, sample_rate, n_mfcc)
         if mfcc_result is not None:
-            mfccs.append(mfcc_result)
+            mfccs_all.append(mfcc_result)
         else:
             print(f"Skipping entry due to MFCC extraction error.")
-    return mfccs
+    return mfccs_all
 
 '''
 
 ------------------------------------------------------------------------------------------------------------------------
     
     Feature Selection Section
-
+    1. Information Gain 
+    2. Fisher Criterion for feature selection
+    3. Principal Component Analysis (PCA)
+    4. Linear Discriminant Analysis (LDA) 
 ------------------------------------------------------------------------------------------------------------------------
 '''
 
@@ -324,5 +326,28 @@ def info_gain(features, data ):
         features are the extracted features from the audio data to be selected
         data is the class labels
     '''
+    # Calculate the information gain for each feature
+    info_gains = mutual_info_classif(features, data)
+    
+    return info_gains
+
+
+def plot_info_gain(info_gains):
+    '''
+        Plot the information gain values for each feature.
+        
+        Args:
+            info_gains (np.array): Information gain values for each feature.
+    '''
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(range(len(info_gains)), info_gains)
+    ax.set_title("Information Gain for Features")
+    ax.set_xlabel("Feature Index")
+    ax.set_ylabel("Information Gain")
+    ax.set_xticks(range(len(info_gains))) # Set ticks for every index
+    plt.show()
+
+    return fig
 
     
+
